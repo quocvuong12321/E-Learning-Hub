@@ -12,7 +12,7 @@
 	<artifactId>e-learning-hub</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>E-Learning Hub</name>
-	<description>Giải pháp toàn diện cho xây dựng thương hiệu cá nhân và kinh doanh tri thức trực tuyến.</description>
+	<description></description>
 	<url/>
 	<licenses>
 		<license/>
@@ -68,6 +68,12 @@
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
+			<groupId>tk.mybatis</groupId>
+			<artifactId>mapper-spring-boot-starter</artifactId>
+			<version>4.3.2</version>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
 			<optional>true</optional>
@@ -96,6 +102,11 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-webmvc-test</artifactId>
 			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>io.github.cdimascio</groupId>
+			<artifactId>dotenv-java</artifactId>
+			<version>3.2.0</version>
 		</dependency>
 	</dependencies>
 

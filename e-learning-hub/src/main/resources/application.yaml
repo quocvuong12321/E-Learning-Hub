@@ -1,3 +1,28 @@
+server:
+  port: 8081
+  servlet:
+    context-path: /elearning-hub
+    encoding:
+      enable: true
+      charset: UTF-8
+      force: true
+
 spring:
-  application:
-    name: E-Learning Hub
+  datasource:
+    url: jdbc:mysql://${DB_HOST:localhost}:${DB_PORT:3306}/${DB_NAME:elearning_db}
+    username: ${DB_USERNAME:root}
+    password: ${DB_PASSWORD:12345}
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        jdbc:
+          # Đảm bảo Hibernate sử dụng múi giờ Việt Nam khi lưu/đọc ngày giờ
+          time_zone: Asia/Ho_Chi_Minh
+    show-sql: true
+jwt:
+  signerKey: ${JWT_PRIVATE_KEY:2e2223fa49b87178e75ad9300192eeb241a1fd2a35c4c95c1d2a7a6fefd72d86}
+
+
+
