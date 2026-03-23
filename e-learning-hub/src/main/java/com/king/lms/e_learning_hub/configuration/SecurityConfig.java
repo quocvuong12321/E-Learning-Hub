@@ -1,6 +1,7 @@
 package com.king.lms.e_learning_hub.configuration;
 
 
+import com.king.lms.e_learning_hub.constant.AppConstants;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -13,13 +14,19 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.jose.jws.MacAlgorithm;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
+import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import javax.crypto.spec.SecretKeySpec;
+import java.io.FilterOutputStream;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Configuration
 public class SecurityConfig {
@@ -27,12 +34,15 @@ public class SecurityConfig {
     @Value("${jwt.signerKey}")
     private String signKey;
 
-    private final String[] PUBLIC_ENDPOINTS = {
-            "/users", "/auth/login", "/auth/introspect",
-    };
+    private static final String[] PUBLIC_ENDPOINTS =
+            {"/users", "/auth/login", "/auth/refresh"};
+
+
+
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
+
         //1. Cấu hình quyền truy cập
         httpSecurity
                 // Kích hoạt CORS, tự lấy CorsConfigurationSource bean
@@ -45,12 +55,27 @@ public class SecurityConfig {
                 );
         //2. Cấu hình resource server để giải mã JWT
         httpSecurity.oauth2ResourceServer(oauth2 ->
-                oauth2.jwt(jwtConfigurer -> jwtConfigurer.decoder(jwtDecoder())));
+                oauth2.jwt(jwtConfigurer -> jwtConfigurer.decoder(jwtDecoder())
+                        .jwtAuthenticationConverter(jwtAuthenticationConverter()))
+                        .authenticationEntryPoint(new JwtAuthenticationEntryPoint())
+        );
         // 3. Vô hiệu hóa CSRF (Vì dùng JWT/Stateless nên không cần)
         httpSecurity.csrf(AbstractHttpConfigurer::disable);
 
         return httpSecurity.build();
     }
+
+    @Bean
+    JwtAuthenticationConverter jwtAuthenticationConverter(){
+        JwtGrantedAuthoritiesConverter jwtGrantedAuthoritiesConverter=new JwtGrantedAuthoritiesConverter();
+        jwtGrantedAuthoritiesConverter.setAuthorityPrefix("");
+
+        JwtAuthenticationConverter jwtAuthenticationConverter = new JwtAuthenticationConverter();
+        jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(jwtGrantedAuthoritiesConverter);
+
+        return  jwtAuthenticationConverter;
+    }
+
 
     @Bean
     public JwtDecoder jwtDecoder() {

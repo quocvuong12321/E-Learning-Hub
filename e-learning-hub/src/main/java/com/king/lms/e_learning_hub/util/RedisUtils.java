@@ -1,5 +1,6 @@
 package com.king.lms.e_learning_hub.util;
 
+import java.time.Duration;
 import java.util.concurrent.TimeUnit;
 
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -21,11 +22,12 @@ public class RedisUtils {
     StringRedisTemplate redisTemplate;
     ObjectMapper objectMapper = new ObjectMapper();
 
-    public <T> void set(String key,T date, long timeoutSeconds){
+    public <T> void set(String key,T data, long timeoutSeconds){
 
         try {
-            String json = objectMapper.writeValueAsString(date);
-            redisTemplate.opsForValue().set(key, json,timeoutSeconds);
+            String json = objectMapper.writeValueAsString(data);
+            System.out.println("JSON to Redis: " + json); // Thêm log ở đây
+            redisTemplate.opsForValue().set(key, json, Duration.ofSeconds(timeoutSeconds));
         } catch (Exception e) {
             throw new AppException(ErrorCode.UNCATEGORIZED_EXCEPTION);
         }
