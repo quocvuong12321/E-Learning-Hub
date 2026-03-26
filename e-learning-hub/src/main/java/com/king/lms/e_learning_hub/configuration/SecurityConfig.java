@@ -35,7 +35,7 @@ public class SecurityConfig {
     private String signKey;
 
     private static final String[] PUBLIC_ENDPOINTS =
-            {"/users", "/auth/login", "/auth/refresh"};
+            {"/users", "/auth/login", "/auth/refresh","/account/register"};
 
 
 
