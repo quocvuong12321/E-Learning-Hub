@@ -5,11 +5,15 @@ import java.text.ParseException;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
+import java.util.Set;
 import java.util.UUID;
 
 import com.google.common.hash.Hashing;
+import com.king.lms.e_learning_hub.entity.Role;
 import com.king.lms.e_learning_hub.enums.TokenType;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.core.OAuth2AccessToken;
 import org.springframework.stereotype.Component;
 
@@ -41,7 +45,7 @@ public class JwtUtils {
 
     public String generateToken(User user, long expiredMinutes, TokenType tokenType) {
         // Lấy chuỗi role ngăn cách bởi space
-        String role = String.join(" ",user.getRoles().stream().map(r->r.getName()).toList());
+        String role = String.join(" ",user.getRoles().stream().map(Role::getName).toList());
 
         JWSHeader header = new JWSHeader(JWSAlgorithm.HS512);
 
@@ -98,6 +102,16 @@ public class JwtUtils {
 
     }
 
+    public String getUserNameByAuthentication(){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if(authentication==null){
+            throw new AppException(ErrorCode.UNAUTHENTICATED);
+        }
+
+        return authentication.getName();
+    }
+
 
     public void storeRefreshToken(String username,String refreshToken,int durationMinutes){
 
@@ -119,6 +133,12 @@ public class JwtUtils {
 
     public void deleteRefreshToken(String username){
         redisUtils.delete(getRefreshTokenKey(username));
+    }
+
+    public String getStringRole(Set<Role> roles){
+
+        return String.join(" ",roles.stream().map(Role::getName).toList());
+
     }
 
 

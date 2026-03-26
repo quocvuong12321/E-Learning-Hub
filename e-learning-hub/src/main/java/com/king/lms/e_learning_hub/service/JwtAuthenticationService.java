@@ -6,11 +6,15 @@ import com.king.lms.e_learning_hub.dto.authenticate.AccessTokenResponse;
 import com.king.lms.e_learning_hub.dto.authenticate.AuthenticateRequest;
 import com.king.lms.e_learning_hub.dto.authenticate.AuthenticateResponse;
 import com.king.lms.e_learning_hub.dto.authenticate.RefreshTokenRequest;
+import com.king.lms.e_learning_hub.dto.user.UserRequest;
+import com.king.lms.e_learning_hub.dto.user.UserResponse;
 import com.king.lms.e_learning_hub.entity.Role;
 import com.king.lms.e_learning_hub.entity.User;
 import com.king.lms.e_learning_hub.enums.TokenType;
 import com.king.lms.e_learning_hub.exception.AppException;
 import com.king.lms.e_learning_hub.exception.ErrorCode;
+import com.king.lms.e_learning_hub.mapper.UserMapper;
+import com.king.lms.e_learning_hub.repository.RoleRepository;
 import com.king.lms.e_learning_hub.repository.UserRepository;
 import com.king.lms.e_learning_hub.util.JwtUtils;
 import com.king.lms.e_learning_hub.util.RedisUtils;
@@ -28,7 +32,7 @@ import org.springframework.stereotype.Service;
 
 import javax.print.DocFlavor;
 import java.text.ParseException;
-import java.util.HashSet;
+import java.util.*;
 
 @Service
 @AllArgsConstructor
@@ -38,6 +42,9 @@ public class JwtAuthenticationService implements BaseAuthenticationService {
     UserRepository userRepository;
     PasswordEncoder passwordEncoder;
     RedisUtils redisUtils;
+    UserMapper userMap;
+    private final RoleRepository roleRepository;
+
     @Override
     public AuthenticateResponse login(AuthenticateRequest request) {
 
@@ -50,7 +57,7 @@ public class JwtAuthenticationService implements BaseAuthenticationService {
 
         jwtUtils.storeRefreshToken(user.getUsername(),refreshToken,(int)TIME_REFRESH);
 
-        String roles = String.join(" ",user.getRoles().stream().map(Role::getName).toList());
+        String roles = jwtUtils.getStringRole(user.getRoles());
 
         return AuthenticateResponse.builder()
                 .accessToken(accessToken)
@@ -83,15 +90,36 @@ public class JwtAuthenticationService implements BaseAuthenticationService {
 
     @Override
     public void logout() throws ParseException, JOSEException {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-        if(authentication==null){
-            throw new AppException(ErrorCode.UNAUTHENTICATED);
-        }
 
-        jwtUtils.deleteRefreshToken(authentication.getName());
+        jwtUtils.deleteRefreshToken(jwtUtils.getUserNameByAuthentication());
         SecurityContextHolder.clearContext();
-
-
     }
+
+    public UserResponse register(UserRequest request){
+
+        if(userRepository.existsByUsername(request.getUsername()))
+            throw new AppException(ErrorCode.USERNAME_EXISTED);
+
+        if(userRepository.existsByEmail(request.getEmail()))
+            throw new AppException(ErrorCode.EMAIL_EXISTED);
+
+        if(!request.getPassword().equals(request.getConfirmPassword()))
+            throw new AppException(ErrorCode.PASSWORD_NOT_MATCH);
+
+
+        String hashPass = passwordEncoder.encode(request.getPassword());
+
+        User user = userMap.toUser(request);
+        String publicId = UUID.randomUUID().toString();
+        user.setPublicId(publicId);
+        user.setPassword(hashPass);
+        Role r = roleRepository.findByName("customer").orElseThrow(()->new AppException(ErrorCode.ROLE_NOT_EXIST));
+        user.setRoles(Collections.singleton(r));
+
+
+        return userMap.toResponse(userRepository.save(user));
+    }
+
+
 }
