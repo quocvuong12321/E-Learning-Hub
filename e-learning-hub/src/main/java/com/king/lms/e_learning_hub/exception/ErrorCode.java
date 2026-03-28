@@ -1,41 +1,44 @@
 package com.king.lms.e_learning_hub.exception;
 
 
+import lombok.Getter;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-
 @Getter
 public enum ErrorCode {
-    // 1xxx: bad request (Lỗi dữ liệu đầu vào)
-    USERNAME_INVALID(1001,"Tài khoản không hợp lệ" ,HttpStatus.BAD_REQUEST),
-    PASSWORD_NOT_MATCH(1002,"Mật khẩu không khớp",HttpStatus.BAD_REQUEST),
-    USERNAME_NOT_BLANK(1003,"Tài khoản không được để trống",HttpStatus.BAD_REQUEST),
-    PASSWORD_INVALID(1004,"Password phải bao gồm chữ hoa, chữ thường, số và ký tự đặc biệt",HttpStatus.BAD_REQUEST),
-    PASSWORD_LENGTH(1005,"Password phải có ít nhất 8 ký tự",HttpStatus.BAD_REQUEST),
-    UNCATEGORIZED_VALIDATION(1999, "Uncategorezed validation", HttpStatus.BAD_REQUEST),
-    // 2xxx: auth (Lỗi xác thực và ủy quyền)
-    UNAUTHENTICATED(2001,"Chưa được xác thực/Đăng nhập",HttpStatus.UNAUTHORIZED),
-    EXPIRED_TOKEN(2002,"Token đã hết hạn",HttpStatus.UNAUTHORIZED),
-    INVALID_TOKEN(2004,"Token không hợp lệ", HttpStatus.UNAUTHORIZED),
-    // 3xxx: business logic (Lỗi nghiệp vụ)
-    ROLE_NOT_EXIST(3001,"Vai trò không tồn tại",HttpStatus.NOT_FOUND),
-    USER_NOT_EXIST(3002,"Tài khoản không tồn tại",HttpStatus.NOT_FOUND),
-    PASSWORD_INCORRECT(3003,"Mật khẩu không chính xác", HttpStatus.BAD_REQUEST),
-    // 4xxx: Lỗi chung khi vi phạm ràng buộc DB (ví dụ: để fallback)
-    USERNAME_EXISTED(4001,"Tài khoản đã tồn tại",HttpStatus.CONFLICT),
-    EMAIL_EXISTED(4002,"Email đã tồn tại",HttpStatus.CONFLICT),
-    // 9xxx: system (Lỗi hệ thống)
-    UNCATEGORIZED_EXCEPTION(9999, "Uncategorized error", HttpStatus.INTERNAL_SERVER_ERROR),
+    // 1xxx: Bad Request (Input Validation Errors)
+    USERNAME_INVALID(1001, "Invalid username format", HttpStatus.BAD_REQUEST),
+    PASSWORD_NOT_MATCH(1002, "Passwords do not match", HttpStatus.BAD_REQUEST),
+    USERNAME_NOT_BLANK(1003, "Username cannot be blank", HttpStatus.BAD_REQUEST),
+    PASSWORD_INVALID(1004, "Password must contain uppercase, lowercase, numbers, and special characters", HttpStatus.BAD_REQUEST),
+    PASSWORD_LENGTH(1005, "Password must be at least 8 characters long", HttpStatus.BAD_REQUEST),
+    UNCATEGORIZED_VALIDATION(1999, "Uncategorized validation error", HttpStatus.BAD_REQUEST),
 
+    // 2xxx: Auth (Authentication and Authorization Errors)
+    UNAUTHENTICATED(2001, "User is not authenticated. Please log in.", HttpStatus.UNAUTHORIZED),
+    EXPIRED_TOKEN(2002, "Token has expired", HttpStatus.UNAUTHORIZED),
+    INVALID_TOKEN(2004, "Invalid token", HttpStatus.UNAUTHORIZED),
+
+    // 3xxx: Business Logic (Service-level Errors)
+    ROLE_NOT_EXIST(3001, "Role does not exist", HttpStatus.NOT_FOUND),
+    USER_NOT_EXIST(3002, "User account not found", HttpStatus.NOT_FOUND),
+    CATEGORY_NOT_EXIST(3003, "Category not found", HttpStatus.NOT_FOUND),
+    PASSWORD_INCORRECT(3004, "Incorrect password", HttpStatus.BAD_REQUEST), // Sửa lại mã 3004 để tránh trùng với CATEGORY_NOT_EXIST
+
+    // 4xxx: Database Constraints (Persistence Errors)
+    USERNAME_EXISTED(4001, "Username already exists", HttpStatus.CONFLICT),
+    EMAIL_EXISTED(4002, "Email already exists", HttpStatus.CONFLICT),
+    SLUG_EXISTED(4003, "Slug already exists, please choose another one", HttpStatus.CONFLICT), // Bổ sung cho SEO Slug logic
+
+    // 9xxx: System (Global Errors)
+    UNCATEGORIZED_EXCEPTION(9999, "An unexpected system error occurred", HttpStatus.INTERNAL_SERVER_ERROR),
     ;
 
     private int code;
     private String message;
     private HttpStatusCode statusCode;
+
     // Tự viết constructor (không dùng Lombok)
     ErrorCode(int code, String message, HttpStatusCode statusCode) {
         this.code = code;
