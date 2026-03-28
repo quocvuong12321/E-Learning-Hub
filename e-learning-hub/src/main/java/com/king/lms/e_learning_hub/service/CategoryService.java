@@ -29,7 +29,7 @@ public class CategoryService {
 
     public PageResponse<CategoryResponse> getCategories(int page, int size) {
         //1. Tạo đối tượng Pageable (thường kèm theo Sort để dữ liệu nhất quán)
-        Pageable pageable = PageRequest.of(page, size, Sort.by("id").ascending());
+        Pageable pageable = PageRequest.of(page-1, size, Sort.by("id").ascending());
 
         Page<Category> categories = categoryRepository.findAll(pageable);
 

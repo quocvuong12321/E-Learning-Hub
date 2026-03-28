@@ -5,6 +5,8 @@ import lombok.experimental.FieldDefaults;
 
 import java.util.List;
 
+import com.king.lms.e_learning_hub.dto.post.PostSummaryProjection;
+
 @Data
 @Builder
 @NoArgsConstructor
