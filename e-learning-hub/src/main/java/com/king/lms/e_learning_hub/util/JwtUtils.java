@@ -8,16 +8,15 @@ import java.util.Date;
 import java.util.Set;
 import java.util.UUID;
 
-import com.google.common.hash.Hashing;
-import com.king.lms.e_learning_hub.entity.Role;
-import com.king.lms.e_learning_hub.enums.TokenType;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.oauth2.core.OAuth2AccessToken;
 import org.springframework.stereotype.Component;
 
+import com.google.common.hash.Hashing;
+import com.king.lms.e_learning_hub.entity.Role;
 import com.king.lms.e_learning_hub.entity.User;
+import com.king.lms.e_learning_hub.enums.TokenType;
 import com.king.lms.e_learning_hub.exception.AppException;
 import com.king.lms.e_learning_hub.exception.ErrorCode;
 import com.nimbusds.jose.JOSEException;

@@ -1,7 +1,13 @@
 package com.king.lms.e_learning_hub.controller;
 
 
-import com.king.lms.e_learning_hub.constant.AppConstants;
+import java.text.ParseException;
+
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.king.lms.e_learning_hub.dto.Response.ApiResponse;
 import com.king.lms.e_learning_hub.dto.authenticate.AccessTokenResponse;
 import com.king.lms.e_learning_hub.dto.authenticate.AuthenticateRequest;
@@ -10,20 +16,12 @@ import com.king.lms.e_learning_hub.dto.authenticate.RefreshTokenRequest;
 import com.king.lms.e_learning_hub.enums.TokenType;
 import com.king.lms.e_learning_hub.service.JwtAuthenticationService;
 import com.king.lms.e_learning_hub.util.CookieUtils;
-import com.king.lms.e_learning_hub.util.JwtUtils;
 import com.nimbusds.jose.JOSEException;
+
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
-import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-import java.text.ParseException;
 
 @RestController
 @RequestMapping("/auth")

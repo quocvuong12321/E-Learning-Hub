@@ -1,9 +1,10 @@
 package com.king.lms.e_learning_hub.exception;
 
 
-import lombok.Getter;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
+
+import lombok.Getter;
 
 @Getter
 public enum ErrorCode {
@@ -25,7 +26,7 @@ public enum ErrorCode {
     USER_NOT_EXIST(3002, "User account not found", HttpStatus.NOT_FOUND),
     CATEGORY_NOT_EXIST(3003, "Category not found", HttpStatus.NOT_FOUND),
     PASSWORD_INCORRECT(3004, "Incorrect password", HttpStatus.BAD_REQUEST), // Sửa lại mã 3004 để tránh trùng với CATEGORY_NOT_EXIST
-
+    POST_NOT_EXIST(3005,"Post does not exist",HttpStatus.NOT_FOUND),
     // 4xxx: Database Constraints (Persistence Errors)
     USERNAME_EXISTED(4001, "Username already exists", HttpStatus.CONFLICT),
     EMAIL_EXISTED(4002, "Email already exists", HttpStatus.CONFLICT),

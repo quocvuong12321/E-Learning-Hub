@@ -23,6 +23,8 @@ spring:
     show-sql: true
 jwt:
   signerKey: ${JWT_SECRET}
+file:
+  upload-dir: ${IMAGE_DIR}
 
 
 

@@ -1,5 +1,12 @@
 package com.king.lms.e_learning_hub.controller;
 
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.king.lms.e_learning_hub.dto.Response.ApiResponse;
 import com.king.lms.e_learning_hub.dto.authenticate.AuthenticateResponse;
 import com.king.lms.e_learning_hub.dto.user.ChangePasswordRequest;
@@ -11,12 +18,10 @@ import com.king.lms.e_learning_hub.service.AccountService;
 import com.king.lms.e_learning_hub.service.BaseAuthenticationService;
 import com.king.lms.e_learning_hub.service.JwtAuthenticationService;
 import com.king.lms.e_learning_hub.util.CookieUtils;
-import jakarta.servlet.http.Cookie;
+
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
-import org.antlr.v4.runtime.Token;
-import org.springframework.web.bind.annotation.*;
 
 @RestController
 @AllArgsConstructor

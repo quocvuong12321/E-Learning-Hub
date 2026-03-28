@@ -23,4 +23,9 @@ public class Keyword {
     private String name;
 
     private String slug;
+
+    public Keyword orElseGet(Object object) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'orElseGet'");
+    }
 }

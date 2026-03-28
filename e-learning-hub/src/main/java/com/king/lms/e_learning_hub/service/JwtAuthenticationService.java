@@ -1,7 +1,14 @@
 package com.king.lms.e_learning_hub.service;
 
 
-import com.king.lms.e_learning_hub.dto.Response.ApiResponse;
+import java.text.ParseException;
+import java.util.Collections;
+import java.util.UUID;
+
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+
 import com.king.lms.e_learning_hub.dto.authenticate.AccessTokenResponse;
 import com.king.lms.e_learning_hub.dto.authenticate.AuthenticateRequest;
 import com.king.lms.e_learning_hub.dto.authenticate.AuthenticateResponse;
@@ -19,20 +26,10 @@ import com.king.lms.e_learning_hub.repository.UserRepository;
 import com.king.lms.e_learning_hub.util.JwtUtils;
 import com.king.lms.e_learning_hub.util.RedisUtils;
 import com.nimbusds.jose.JOSEException;
-import com.nimbusds.jwt.JWTClaimsSet;
-import jakarta.servlet.http.HttpServletRequest;
+
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service;
-
-import javax.print.DocFlavor;
-import java.text.ParseException;
-import java.util.*;
 
 @Service
 @AllArgsConstructor

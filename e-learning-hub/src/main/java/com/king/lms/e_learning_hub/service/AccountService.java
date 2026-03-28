@@ -1,12 +1,13 @@
 package com.king.lms.e_learning_hub.service;
 
 
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+
 import com.king.lms.e_learning_hub.dto.authenticate.AuthenticateResponse;
 import com.king.lms.e_learning_hub.dto.user.ChangePasswordRequest;
-import com.king.lms.e_learning_hub.dto.user.UserRequest;
 import com.king.lms.e_learning_hub.dto.user.UserResponse;
 import com.king.lms.e_learning_hub.dto.user.UserUpdateRequest;
-import com.king.lms.e_learning_hub.entity.Role;
 import com.king.lms.e_learning_hub.entity.User;
 import com.king.lms.e_learning_hub.enums.TokenType;
 import com.king.lms.e_learning_hub.exception.AppException;
@@ -14,16 +15,10 @@ import com.king.lms.e_learning_hub.exception.ErrorCode;
 import com.king.lms.e_learning_hub.mapper.UserMapper;
 import com.king.lms.e_learning_hub.repository.UserRepository;
 import com.king.lms.e_learning_hub.util.JwtUtils;
+
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service;
-
-import java.util.Collection;
-import java.util.Collections;
 
 @Service
 @AllArgsConstructor
