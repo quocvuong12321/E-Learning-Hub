@@ -1,15 +1,9 @@
 package com.king.lms.e_learning_hub.entity;
 
+import java.util.List;
 import java.util.Set;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
-import jakarta.persistence.PrePersist;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -47,6 +41,9 @@ public class User extends BaseEntity{
             inverseJoinColumns = @JoinColumn(name = "role_id")
     )
     Set<Role> roles;
+
+    @OneToMany(fetch = FetchType.LAZY,mappedBy = "author",cascade = CascadeType.ALL)
+    List<Post> posts;
 
     @PrePersist
     protected void onCreate() {
