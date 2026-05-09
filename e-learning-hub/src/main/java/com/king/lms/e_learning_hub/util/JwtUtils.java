@@ -4,12 +4,11 @@ import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.Date;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
@@ -101,14 +100,30 @@ public class JwtUtils {
 
     }
 
-    public String getUserNameByAuthentication(){
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    private Authentication checkAuthentication(){
 
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if(authentication==null){
             throw new AppException(ErrorCode.UNAUTHENTICATED);
         }
+        return authentication;
+
+    }
+
+    public String getUserNameByAuthentication(){
+        Authentication authentication = checkAuthentication();
+
 
         return authentication.getName();
+    }
+
+    public List<String> getRoleByAuthentication(){
+        Authentication authentication = checkAuthentication();
+
+        return authentication.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority).filter(Objects::nonNull)
+                .filter(role->role.startsWith("ROLE_"))
+        .toList();
     }
 
 

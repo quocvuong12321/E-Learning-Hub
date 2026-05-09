@@ -19,6 +19,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -44,7 +46,14 @@ public class CategoryService {
                 .build();
     }
 
+    public Set<CategoryResponse> getCategories(){
+        return categoryRepository.findAll().stream().map(categoryMapper::toResponse).collect(Collectors.toSet());
+    }
+
     public CategoryResponse createCategory(CategoryRequest request) {
+
+        if(categoryRepository.existsBySlug(request.getSlug()))
+            throw new AppException(ErrorCode.SLUG_EXISTED);
 
         Category category = categoryMapper.toCategory(request);
 
@@ -52,7 +61,8 @@ public class CategoryService {
     }
 
     public CategoryResponse updateCategory(Long id, CategoryRequest request) {
-
+        if(categoryRepository.existsBySlug(request.getSlug()))
+            throw new AppException(ErrorCode.SLUG_EXISTED);
         Category category = categoryRepository.findById(id).orElseThrow(() -> new AppException(ErrorCode.CATEGORY_NOT_EXIST));
 
         category.setName(request.getName());
@@ -67,5 +77,10 @@ public class CategoryService {
         categoryRepository.delete(category);
     }
 
+    public CategoryResponse getCategoryById(long id){
+
+        return categoryMapper.toResponse(categoryRepository.findById(id).orElseThrow(()->new AppException(ErrorCode.CATEGORY_NOT_EXIST)));
+
+    }
 
 }

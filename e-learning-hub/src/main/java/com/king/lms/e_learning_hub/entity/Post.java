@@ -53,8 +53,8 @@ public class Post extends BaseEntity {
     String body;
 
     @Enumerated(EnumType.STRING)
-    @Column(columnDefinition = "ENUM('PUBLIC', 'HIDDEN') DEFAULT 'HIDDEN'")
-    PostStatus status;
+    @Column(name = "status")
+    PostStatus status = PostStatus.DRAFT; // Mặc định là Nháp khi tạo mới
 
     @Column(name = "view_count")
     Integer viewCount = 0;
@@ -67,9 +67,8 @@ public class Post extends BaseEntity {
     Set<Keyword> keywords;
 
 
-    // Định nghĩa Enum cho trạng thái bài viết
     public enum PostStatus {
-        PUBLIC, HIDDEN
+        PUBLISHED, ARCHIVED, DRAFT // Thêm DRAFT để hỗ trợ lưu nháp
     }
 
 

@@ -20,6 +20,8 @@ import com.king.lms.e_learning_hub.service.CategoryService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 
+import java.util.Set;
+
 @RestController
 @AllArgsConstructor
 @RequestMapping("/category")
@@ -35,6 +37,12 @@ public class CategoryController {
                 .build();
     }
 
+    @GetMapping("/all")
+    public ApiResponse<Set<CategoryResponse>> getAllCategory(){
+        return ApiResponse.<Set<CategoryResponse>>builder()
+                .result(categoryService.getCategories())
+                .build();
+    }
     @PostMapping
     public ApiResponse<CategoryResponse> createCategory(@Valid  @RequestBody CategoryRequest request){
         return ApiResponse.<CategoryResponse>builder()

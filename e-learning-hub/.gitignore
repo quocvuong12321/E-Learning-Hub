@@ -20,6 +20,8 @@ target/
 *.ipr
 .run
 upload
+uploads
+
 
 ### NetBeans ###
 /nbproject/private/

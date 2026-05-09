@@ -37,7 +37,8 @@ public class SecurityConfig {
     private static final String[] PUBLIC_ENDPOINTS =
             {"/users", "/auth/login", "/auth/refresh","/account/register"};
 
-
+    private  static final String[] PUBLIC_GET_ENDPOINTS =
+            {"/post/**","/swagger-ui.html", "/v3/api-docs","/category/**","/image/**"};
 
 
     @Bean
@@ -45,12 +46,15 @@ public class SecurityConfig {
 
         //1. Cấu hình quyền truy cập
         httpSecurity
+                .cors(cors -> cors.configurationSource(configurationSource()))
                 // Kích hoạt CORS, tự lấy CorsConfigurationSource bean
-                .cors(Customizer.withDefaults())
+                .csrf(AbstractHttpConfigurer::disable)
                 // Phân quyền
                 .authorizeHttpRequests(request ->
-                        request.requestMatchers(HttpMethod.POST, PUBLIC_ENDPOINTS).permitAll()
-                                .requestMatchers(HttpMethod.GET, "/swagger-ui.html", "/v3/api-docs").permitAll()
+                        request
+                                .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                                .requestMatchers(HttpMethod.POST, PUBLIC_ENDPOINTS).permitAll()
+                                .requestMatchers(HttpMethod.GET,PUBLIC_GET_ENDPOINTS ).permitAll()
                                 .anyRequest().authenticated()
                 );
         //2. Cấu hình resource server để giải mã JWT
@@ -59,17 +63,15 @@ public class SecurityConfig {
                         .jwtAuthenticationConverter(jwtAuthenticationConverter()))
                         .authenticationEntryPoint(new JwtAuthenticationEntryPoint())
         );
-        // 3. Vô hiệu hóa CSRF (Vì dùng JWT/Stateless nên không cần)
-        httpSecurity.csrf(AbstractHttpConfigurer::disable);
-
         return httpSecurity.build();
     }
 
     @Bean
     JwtAuthenticationConverter jwtAuthenticationConverter(){
         JwtGrantedAuthoritiesConverter jwtGrantedAuthoritiesConverter=new JwtGrantedAuthoritiesConverter();
-        jwtGrantedAuthoritiesConverter.setAuthorityPrefix("");
+        jwtGrantedAuthoritiesConverter.setAuthorityPrefix("ROLE_");
 
+        jwtGrantedAuthoritiesConverter.setAuthoritiesClaimName("scope");
         JwtAuthenticationConverter jwtAuthenticationConverter = new JwtAuthenticationConverter();
         jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(jwtGrantedAuthoritiesConverter);
 
@@ -95,9 +97,11 @@ public class SecurityConfig {
     CorsConfigurationSource configurationSource() {
         CorsConfiguration corsConfiguration = new CorsConfiguration();
 
+        corsConfiguration.setAllowedOrigins(List.of("http://localhost:5173"));
         corsConfiguration.setAllowedMethods(List.of("GET", "PUT", "POST", "PATCH", "DELETE", "OPTIONS", "HEAD"));
-        corsConfiguration.setAllowedHeaders(List.of("*"));
+        corsConfiguration.setAllowedHeaders(List.of("Authorization", "Content-Type", "X-Requested-With"));
         corsConfiguration.setExposedHeaders(List.of("Authorization"));
+        //QUAN TRỌNG: Cho phép Frontend đọc được Header Authorization (chứa JWT)
         corsConfiguration.setAllowCredentials(true); // Phải là false khi dùng "*"
         corsConfiguration.setMaxAge(3600L);
 
