@@ -13,6 +13,8 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class ChangePasswordRequest {
 
+    String oldPassword;
+
     @Size(min = 8, message = "PASSWORD_LENGTH")
     @Pattern(regexp = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#&()–{}:;',?/*~$^+=<>]).{8,}$",
             message = "PASSWORD_INVALID"

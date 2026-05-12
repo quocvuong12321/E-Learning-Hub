@@ -1,11 +1,6 @@
 package com.king.lms.e_learning_hub.controller;
 
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.king.lms.e_learning_hub.dto.Response.ApiResponse;
 import com.king.lms.e_learning_hub.dto.authenticate.AuthenticateResponse;
@@ -38,7 +33,14 @@ public class AccountController {
                 .build();
     }
 
-    @PutMapping("/profile")
+    @GetMapping
+    public ApiResponse<UserResponse> getProfile(){
+        return ApiResponse.<UserResponse>builder()
+                .result(accountService.getProfile())
+                .build();
+    }
+
+    @PutMapping
     public ApiResponse<UserResponse> updateProfile(@RequestBody UserUpdateRequest request){
 
 
