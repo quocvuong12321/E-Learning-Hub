@@ -25,7 +25,7 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE,makeFinal = true)
 public class AccountService {
     PasswordEncoder encoder;
-     UserRepository userRepository;
+    UserRepository userRepository;
     UserMapper userMap;
     JwtUtils jwtUtils;
     public UserResponse updateAccount(UserUpdateRequest request){
@@ -40,14 +40,26 @@ public class AccountService {
         return userMap.toResponse(userRepository.save(u));
     }
 
+    public UserResponse getProfile(){
+        String username = jwtUtils.getUserNameByAuthentication();
+
+        User u = userRepository.findByUsername(username).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXIST));
+
+        return userMap.toResponse(u);
+
+    }
+
     public AuthenticateResponse changePassword(ChangePasswordRequest request){
 
-        if(!request.getPassword().equals(request.getConfirmPassword()))
-            throw new AppException(ErrorCode.PASSWORD_NOT_MATCH);
 
         String username = jwtUtils.getUserNameByAuthentication();
 
         User u = userRepository.findByUsername(username).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXIST));
+
+        if(!encoder.matches(request.getOldPassword(),u.getPassword()))
+            throw new AppException(ErrorCode.PASSWORD_INCORRECT);
+        if(!request.getPassword().equals(request.getConfirmPassword()))
+            throw new AppException(ErrorCode.PASSWORD_NOT_MATCH);
 
         String hashPassword = encoder.encode(request.getPassword());
 
