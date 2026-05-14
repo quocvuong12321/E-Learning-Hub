@@ -1,12 +1,14 @@
 package com.king.lms.e_learning_hub.configuration;
 
 
-import com.king.lms.e_learning_hub.constant.AppConstants;
+import java.util.List;
+
+import javax.crypto.spec.SecretKeySpec;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -21,13 +23,6 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-import javax.crypto.spec.SecretKeySpec;
-import java.io.FilterOutputStream;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
-
 @Configuration
 public class SecurityConfig {
 
@@ -38,7 +33,7 @@ public class SecurityConfig {
             {"/users", "/auth/login", "/auth/refresh","/account/register"};
 
     private  static final String[] PUBLIC_GET_ENDPOINTS =
-            {"/post/**","/swagger-ui.html", "/v3/api-docs","/category/**","/image/**"};
+            {"/post/**","/swagger-ui.html", "/v3/api-docs","/category/**","/image/**", "/course-category/**"};
 
 
     @Bean

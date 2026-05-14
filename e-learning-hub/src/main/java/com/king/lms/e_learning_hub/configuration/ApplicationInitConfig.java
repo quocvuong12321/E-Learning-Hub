@@ -1,24 +1,21 @@
 package com.king.lms.e_learning_hub.configuration;
 
-import com.king.lms.e_learning_hub.entity.Role;
-import com.king.lms.e_learning_hub.entity.User;
-import com.king.lms.e_learning_hub.exception.AppException;
-import com.king.lms.e_learning_hub.exception.ErrorCode;
-import com.king.lms.e_learning_hub.repository.RoleRepository;
-import com.king.lms.e_learning_hub.repository.UserRepository;
-import lombok.AccessLevel;
-import lombok.RequiredArgsConstructor;
-import lombok.experimental.FieldDefaults;
-import lombok.extern.slf4j.Slf4j;
+import java.util.HashSet;
+
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
+import com.king.lms.e_learning_hub.entity.Role;
+import com.king.lms.e_learning_hub.entity.User;
+import com.king.lms.e_learning_hub.repository.RoleRepository;
+import com.king.lms.e_learning_hub.repository.UserRepository;
+
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
+import lombok.extern.slf4j.Slf4j;
 
 @Configuration
 @RequiredArgsConstructor

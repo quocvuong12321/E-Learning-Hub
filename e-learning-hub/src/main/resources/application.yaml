@@ -27,9 +27,9 @@ spring:
       max-request-size: 10MB
 
 jwt:
-  signerKey: ${JWT_SECRET}
+  signerKey: ${JWT_SECRET:2e2223fa49b87178e75ad9300192eeb241a1fd2a35c4c95c1d2a7a6fefd72d86}
 file:
-  upload-dir: ${IMAGE_DIR}
+  upload-dir: ${IMAGE_DIR:./uploads/images}
 logging:
   level:
     org.springframework.security: DEBUG
