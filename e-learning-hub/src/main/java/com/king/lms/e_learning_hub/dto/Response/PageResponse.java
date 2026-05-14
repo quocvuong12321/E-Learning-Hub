@@ -1,11 +1,13 @@
 package com.king.lms.e_learning_hub.dto.Response;
 
-import lombok.*;
-import lombok.experimental.FieldDefaults;
-
 import java.util.List;
 
-import com.king.lms.e_learning_hub.dto.post.PostSummaryProjection;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.experimental.FieldDefaults;
 
 @Data
 @Builder
