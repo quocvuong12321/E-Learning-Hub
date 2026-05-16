@@ -27,5 +27,5 @@ public class UserRequest {
     String email;
     String fullName;
     String avatar = null;
-
+    String phoneNumber;
 }

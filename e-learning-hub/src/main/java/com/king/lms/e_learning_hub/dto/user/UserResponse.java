@@ -15,5 +15,6 @@ public class UserResponse {
     String avatar;
     String fullName;
     String publicId;
-
+    String phoneNumber;
+    boolean isActive;
 }

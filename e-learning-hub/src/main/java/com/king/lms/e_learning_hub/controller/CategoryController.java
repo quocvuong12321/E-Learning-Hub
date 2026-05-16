@@ -1,6 +1,7 @@
 package com.king.lms.e_learning_hub.controller;
 
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -43,20 +44,22 @@ public class CategoryController {
                 .result(categoryService.getCategories())
                 .build();
     }
+
+    @PreAuthorize("hasRole('admin')")
     @PostMapping
     public ApiResponse<CategoryResponse> createCategory(@Valid  @RequestBody CategoryRequest request){
         return ApiResponse.<CategoryResponse>builder()
                 .result(categoryService.createCategory(request))
                 .build();
     }
-
+    @PreAuthorize("hasRole('admin')")
     @PutMapping("/{id}")
     public ApiResponse<CategoryResponse> updateCategory(@PathVariable Long id, @Valid @RequestBody CategoryRequest request){
         return ApiResponse.<CategoryResponse>builder()
                 .result(categoryService.updateCategory(id,request))
                 .build();
     }
-
+    @PreAuthorize("hasRole('admin')")
     @DeleteMapping("/{id}")
     public ApiResponse<Void> deleteCategory(@PathVariable Long id){
 

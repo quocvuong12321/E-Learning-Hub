@@ -8,6 +8,25 @@ server:
       force: true
 
 spring:
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: ${GOOGLE_CLIENT_ID}
+            client-secret: ${GOOGLE_CLIENT_SECRET}
+            redirect-uri: "{baseUrl}/auth/callback/google"
+            scope:
+              - email
+              - profile
+            client-name: Google
+      provider:
+          google:
+            authorization-uri: https://accounts.google.com/o/oauth2/v2/auth
+            token-uri: https://www.googleapis.com/oauth2/v4/token
+            user-info-uri: https://www.googleapis.com/oauth2/v1/userinfo
+            jwk-set-uri: https://www.googleapis.com/oauth2/v3/certs
+            user-name-attribute: sub
   datasource:
     url: jdbc:mysql://${DB_HOST:localhost}:${DB_PORT:3306}/${DB_NAME:elearning_db}
     username: ${DB_USERNAME:root}
@@ -25,6 +44,15 @@ spring:
     multipart:
       max-file-size: 5MB
       max-request-size: 10MB
+
+
+oauth2:
+  google:
+    client-id: ${GOOGLE_CLIENT_ID}
+    client-secret: ${GOOGLE_CLIENT_SECRET}
+    token-url: https://www.googleapis.com/oauth2/v4/token
+    user-info-url: https://www.googleapis.com/oauth2/v1/userinfo
+    redirect-uri: ${OAUTH2_REDIRECT_URI:http://localhost:8081/elearning-hub/auth/oauth2/callback} # ✅ URL frontend redirect
 
 jwt:
   signerKey: ${JWT_SECRET:2e2223fa49b87178e75ad9300192eeb241a1fd2a35c4c95c1d2a7a6fefd72d86}

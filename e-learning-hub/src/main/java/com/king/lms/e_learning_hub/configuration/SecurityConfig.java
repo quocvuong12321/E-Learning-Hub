@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -24,16 +25,31 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 @Configuration
+@EnableMethodSecurity
 public class SecurityConfig {
 
     @Value("${jwt.signerKey}")
     private String signKey;
 
     private static final String[] PUBLIC_ENDPOINTS =
-            {"/users", "/auth/login", "/auth/refresh","/account/register"};
+            {"/users",
+                    "/auth/login",
+                    "/auth/refresh",
+                    "/account/register",
+//            "/auth/callback/**",        // OAuth2 callback
+                    "/auth/oauth2/**",          // ✅ OAuth2 endpoints
+//            "/auth/google/callback",    // ✅ Google callback
+            };
 
-    private  static final String[] PUBLIC_GET_ENDPOINTS =
-            {"/post/**","/swagger-ui.html", "/v3/api-docs","/category/**","/image/**", "/course-category/**"};
+    private static final String[] PUBLIC_GET_ENDPOINTS =
+            {"/post/**",
+                    "/swagger-ui.html",
+                    "/v3/api-docs",
+                    "/category/**",
+                    "/image/**",
+                    "/course-category/**",
+                    "/auth/oauth2/**"
+            };
 
 
     @Bean
@@ -49,28 +65,28 @@ public class SecurityConfig {
                         request
                                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                                 .requestMatchers(HttpMethod.POST, PUBLIC_ENDPOINTS).permitAll()
-                                .requestMatchers(HttpMethod.GET,PUBLIC_GET_ENDPOINTS ).permitAll()
+                                .requestMatchers(HttpMethod.GET, PUBLIC_GET_ENDPOINTS).permitAll()
                                 .anyRequest().authenticated()
                 );
         //2. Cấu hình resource server để giải mã JWT
         httpSecurity.oauth2ResourceServer(oauth2 ->
                 oauth2.jwt(jwtConfigurer -> jwtConfigurer.decoder(jwtDecoder())
-                        .jwtAuthenticationConverter(jwtAuthenticationConverter()))
+                                .jwtAuthenticationConverter(jwtAuthenticationConverter()))
                         .authenticationEntryPoint(new JwtAuthenticationEntryPoint())
         );
         return httpSecurity.build();
     }
 
     @Bean
-    JwtAuthenticationConverter jwtAuthenticationConverter(){
-        JwtGrantedAuthoritiesConverter jwtGrantedAuthoritiesConverter=new JwtGrantedAuthoritiesConverter();
+    JwtAuthenticationConverter jwtAuthenticationConverter() {
+        JwtGrantedAuthoritiesConverter jwtGrantedAuthoritiesConverter = new JwtGrantedAuthoritiesConverter();
         jwtGrantedAuthoritiesConverter.setAuthorityPrefix("ROLE_");
 
         jwtGrantedAuthoritiesConverter.setAuthoritiesClaimName("scope");
         JwtAuthenticationConverter jwtAuthenticationConverter = new JwtAuthenticationConverter();
         jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(jwtGrantedAuthoritiesConverter);
 
-        return  jwtAuthenticationConverter;
+        return jwtAuthenticationConverter;
     }
 
 
