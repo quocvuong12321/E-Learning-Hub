@@ -23,7 +23,7 @@ import lombok.experimental.FieldDefaults;
 @Service
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE,makeFinal = true)
-public class AccountService {
+public class AccountManagementService {
     PasswordEncoder encoder;
     UserRepository userRepository;
     UserMapper userMap;
@@ -44,9 +44,9 @@ public class AccountService {
         String username = jwtUtils.getUserNameByAuthentication();
 
         User u = userRepository.findByUsername(username).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXIST));
-
-        return userMap.toResponse(u);
-
+        UserResponse response = userMap.toResponse(u);
+        response.setActive(u.isActive());
+        return response;
     }
 
     public AuthenticateResponse changePassword(ChangePasswordRequest request){
@@ -80,8 +80,5 @@ public class AccountService {
                 .accessToken(newAccessToken)
                 .role(jwtUtils.getStringRole(u.getRoles()))
                 .build();
-
-
-
     }
 }

@@ -9,7 +9,7 @@ import com.king.lms.e_learning_hub.dto.user.UserRequest;
 import com.king.lms.e_learning_hub.dto.user.UserResponse;
 import com.king.lms.e_learning_hub.dto.user.UserUpdateRequest;
 import com.king.lms.e_learning_hub.enums.TokenType;
-import com.king.lms.e_learning_hub.service.AccountService;
+import com.king.lms.e_learning_hub.service.AccountManagementService;
 import com.king.lms.e_learning_hub.service.BaseAuthenticationService;
 import com.king.lms.e_learning_hub.service.JwtAuthenticationService;
 import com.king.lms.e_learning_hub.util.CookieUtils;
@@ -23,7 +23,7 @@ import lombok.AllArgsConstructor;
 @RequestMapping("/account")
 public class AccountController {
     JwtAuthenticationService jwtAuthenticationService;
-    AccountService accountService;
+    AccountManagementService accountService;
     CookieUtils cookieUtils;
     @PostMapping("/register")
     public ApiResponse<UserResponse> register(@Valid @RequestBody UserRequest request){

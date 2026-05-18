@@ -20,7 +20,7 @@ public enum ErrorCode {
     UNAUTHENTICATED(2001, "User is not authenticated. Please log in.", HttpStatus.UNAUTHORIZED),
     EXPIRED_TOKEN(2002, "Token has expired", HttpStatus.UNAUTHORIZED),
     INVALID_TOKEN(2004, "Invalid token", HttpStatus.UNAUTHORIZED),
-
+    OAUTH2_ERROR(2005,"ERROR WITH OAUTH2",HttpStatus.UNAUTHORIZED),
     // 3xxx: Business Logic (Service-level Errors)
     ROLE_NOT_EXIST(3001, "Role does not exist", HttpStatus.NOT_FOUND),
     USER_NOT_EXIST(3002, "User account not found", HttpStatus.NOT_FOUND),

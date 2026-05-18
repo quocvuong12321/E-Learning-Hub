@@ -1,13 +1,12 @@
 package com.king.lms.e_learning_hub.service;
 
+import java.text.ParseException;
+
 import com.king.lms.e_learning_hub.dto.authenticate.AccessTokenResponse;
 import com.king.lms.e_learning_hub.dto.authenticate.AuthenticateRequest;
 import com.king.lms.e_learning_hub.dto.authenticate.AuthenticateResponse;
 import com.king.lms.e_learning_hub.dto.authenticate.RefreshTokenRequest;
-import com.king.lms.e_learning_hub.dto.user.UserResponse;
 import com.nimbusds.jose.JOSEException;
-
-import java.text.ParseException;
 
 public interface BaseAuthenticationService {
 
