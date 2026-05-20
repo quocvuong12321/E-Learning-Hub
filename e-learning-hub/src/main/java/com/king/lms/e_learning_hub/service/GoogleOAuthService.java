@@ -1,5 +1,16 @@
 package com.king.lms.e_learning_hub.service;
 
+import java.io.IOException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import java.time.LocalDateTime;
+import java.util.Collections;
+import java.util.UUID;
+
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.http.javanet.NetHttpTransport;
@@ -12,7 +23,6 @@ import com.king.lms.e_learning_hub.dto.oauth2.GoogleOAuthConfigResponse;
 import com.king.lms.e_learning_hub.dto.oauth2.GoogleTokenResponse;
 import com.king.lms.e_learning_hub.dto.oauth2.GoogleUserInfo;
 import com.king.lms.e_learning_hub.dto.oauth2.OAuthLoginRequest;
-import com.king.lms.e_learning_hub.dto.oauth2.OAuthLoginResponse;
 import com.king.lms.e_learning_hub.entity.Role;
 import com.king.lms.e_learning_hub.entity.User;
 import com.king.lms.e_learning_hub.enums.AuthProvider;
@@ -30,15 +40,6 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.io.IOException;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
-import java.time.LocalDateTime;
-import java.util.Collections;
-import java.util.UUID;
 
 @Service
 @AllArgsConstructor
@@ -52,7 +53,6 @@ public class GoogleOAuthService implements OAuthAuthenticationService {
     private final UserMapper userMap;
     private final Gson gson = new Gson();
 
-
  /**
      * ✅ Get Google OAuth configuration
      * Build full authorization URL for frontend to redirect to Google
@@ -63,7 +63,8 @@ public class GoogleOAuthService implements OAuthAuthenticationService {
         try {
             // ✅ Build authorization URL
             String authorizationUrl = String.format(
-                "https://accounts.google.com/o/oauth2/v2/auth?client_id=%s&redirect_uri=%s&response_type=code&scope=%s&access_type=offline",
+                "%s?client_id=%s&redirect_uri=%s&response_type=code&scope=%s&access_type=offline",
+                oauth2Properties.getAuthorizationUrl(),
                 URLEncoder.encode(oauth2Properties.getClientId(), StandardCharsets.UTF_8),
                 URLEncoder.encode(oauth2Properties.getRedirectUri(), StandardCharsets.UTF_8),
                 URLEncoder.encode("openid email profile", StandardCharsets.UTF_8)

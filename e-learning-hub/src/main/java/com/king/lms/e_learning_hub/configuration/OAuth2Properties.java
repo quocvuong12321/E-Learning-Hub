@@ -15,4 +15,5 @@ public class OAuth2Properties {
     private String tokenUrl;
     private String userInfoUrl;
     private String redirectUri;
+    private String authorizationUrl;
 }

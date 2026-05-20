@@ -29,10 +29,11 @@ import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Component
 @RequiredArgsConstructor
-
+@Slf4j
 public class JwtUtils {
 
     @Value("${jwt.signerKey}")
@@ -142,11 +143,18 @@ public class JwtUtils {
     }
 
     public String getRefreshTokenKey(String username){
+
+        
+
         return KEY+username;
     }
 
     public void deleteRefreshToken(String username){
-        redisUtils.delete(getRefreshTokenKey(username));
+
+        String key = getRefreshTokenKey(username);
+        log.info("key: ",key);
+
+        redisUtils.delete(key);
     }
 
     public String getStringRole(Set<Role> roles){
