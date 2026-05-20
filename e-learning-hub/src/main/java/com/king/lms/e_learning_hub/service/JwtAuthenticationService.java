@@ -74,7 +74,6 @@ public class JwtAuthenticationService implements BaseAuthenticationService {
        user.setActive(true);
        userRepository.save(user);
 
-       log.info("✅ User {} logged in successfully via LOCAL", user.getUsername());
 
        return generateAuthResponse(user);
    }
@@ -100,7 +99,6 @@ public class JwtAuthenticationService implements BaseAuthenticationService {
        // Generate new access token
        String newAccessToken = jwtUtils.generateToken(user, TIME_ACCESS, TokenType.access);
 
-       log.debug("✅ Access token refreshed for user: {}", username);
 
        return AccessTokenResponse.builder()
                .accessToken(newAccessToken)
@@ -115,7 +113,6 @@ public class JwtAuthenticationService implements BaseAuthenticationService {
        String username = jwtUtils.getUserNameByAuthentication();
        jwtUtils.deleteRefreshToken(username);
        SecurityContextHolder.clearContext();
-       log.info("✅ User {} logged out", username);
    }
 
    /**
@@ -154,7 +151,6 @@ public class JwtAuthenticationService implements BaseAuthenticationService {
        user.setRoles(Collections.singleton(customerRole));
 
        User savedUser = userRepository.save(user);
-       log.info("✅ New user registered: {}", savedUser.getUsername());
 
        return userMap.toResponse(savedUser);
    }
@@ -178,7 +174,6 @@ public class JwtAuthenticationService implements BaseAuthenticationService {
            // Delegate to GoogleOAuthService to handle OAuth flow
            return googleOAuthService.handleOAuth(request);
        } catch (Exception e) {
-           log.error("❌ OAuth2 login failed: {}", e.getMessage());
            throw new AppException(ErrorCode.OAUTH2_ERROR);
        }
    }
@@ -203,7 +198,6 @@ public class JwtAuthenticationService implements BaseAuthenticationService {
     // Store refresh token in Redis
     jwtUtils.storeRefreshToken(user.getUsername(), refreshToken, (int)TIME_REFRESH);
 
-    log.info("✅ User {} logged in via OAuth2 provider: {}", user.getUsername(), provider);
 
     return AuthenticateResponse.builder()
             .accessToken(accessToken)

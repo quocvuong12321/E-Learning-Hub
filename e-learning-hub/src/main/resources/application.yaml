@@ -50,6 +50,7 @@ oauth2:
   google:
     client-id: ${GOOGLE_CLIENT_ID}
     client-secret: ${GOOGLE_CLIENT_SECRET}
+    authorization-url: https://accounts.google.com/o/oauth2/v2/auth
     token-url: https://www.googleapis.com/oauth2/v4/token
     user-info-url: https://www.googleapis.com/oauth2/v1/userinfo
     redirect-uri: ${OAUTH2_REDIRECT_URI:http://localhost:8081/elearning-hub/auth/oauth2/callback} # ✅ URL frontend redirect
