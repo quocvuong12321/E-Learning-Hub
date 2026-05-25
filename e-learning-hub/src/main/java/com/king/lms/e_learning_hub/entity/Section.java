@@ -2,8 +2,6 @@ package com.king.lms.e_learning_hub.entity;
 
 import java.util.List;
 
-import com.google.auto.value.AutoValue.Builder;
-
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
