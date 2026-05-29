@@ -1,6 +1,5 @@
 package com.king.lms.e_learning_hub.configuration;
 
-
 import java.util.List;
 
 import javax.crypto.spec.SecretKeySpec;
@@ -28,98 +27,98 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 @EnableMethodSecurity
 public class SecurityConfig {
 
-    @Value("${jwt.signerKey}")
-    private String signKey;
+        @Value("${jwt.signerKey}")
+        private String signKey;
 
-    private static final String[] PUBLIC_ENDPOINTS =
-            {"/users",
-                    "/auth/login",
-                    "/auth/refresh",
-                    "/account/register",
-//            "/auth/callback/**",        // OAuth2 callback
-                    "/auth/oauth2/**",          // ✅ OAuth2 endpoints
-//            "/auth/google/callback",    // ✅ Google callback
-            };
+        private static final String[] PUBLIC_ENDPOINTS = { "/users",
+                        "/auth/login",
+                        "/auth/refresh",
+                        "/account/register",
+                        // "/auth/callback/**", // OAuth2 callback
+                        "/auth/oauth2/**", // ✅ OAuth2 endpoints
+                        // "/auth/google/callback", // ✅ Google callback
+        };
 
-    private static final String[] PUBLIC_GET_ENDPOINTS =
-            {"/post/**",
-                    "/swagger-ui.html",
-                    "/v3/api-docs",
-                    "/category/**",
-                    "/image/**",
-                    "/course-category/**",
-                    "/auth/oauth2/**"
-            };
+        private static final String[] PUBLIC_GET_ENDPOINTS = {
+                        "/post/**",
+                        "/category/**",
+                        "/image/**",
+                        "/course-category/**",
+                        "/auth/oauth2/**"
+        };
 
+        private static final String[] SWAGGER_WHITELIST = {
+                        "/v3/api-docs", // Bản gốc JSON cấu hình
+                        "/v3/api-docs/**", // Các package mở rộng
+                        "/swagger-ui.html", // Endpoint chuyển hướng
+                        "/swagger-ui/**", // Tài nguyên tĩnh (html, css, js)
+                        "/webjars/**", // Thư viện bổ trợ giao diện
+                        "/error" // Trang xử lý lỗi hệ thống nội bộ
+        };
 
-    @Bean
-    public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
+        @Bean
+        public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
 
-        //1. Cấu hình quyền truy cập
-        httpSecurity
-                .cors(cors -> cors.configurationSource(configurationSource()))
-                // Kích hoạt CORS, tự lấy CorsConfigurationSource bean
-                .csrf(AbstractHttpConfigurer::disable)
-                // Phân quyền
-                .authorizeHttpRequests(request ->
-                        request
-                                .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                                .requestMatchers(HttpMethod.POST, PUBLIC_ENDPOINTS).permitAll()
-                                .requestMatchers(HttpMethod.GET, PUBLIC_GET_ENDPOINTS).permitAll()
-                                .anyRequest().authenticated()
-                );
-        //2. Cấu hình resource server để giải mã JWT
-        httpSecurity.oauth2ResourceServer(oauth2 ->
-                oauth2.jwt(jwtConfigurer -> jwtConfigurer.decoder(jwtDecoder())
-                                .jwtAuthenticationConverter(jwtAuthenticationConverter()))
-                        .authenticationEntryPoint(new JwtAuthenticationEntryPoint())
-        );
-        return httpSecurity.build();
-    }
+                // 1. Cấu hình quyền truy cập
+                httpSecurity
+                                .cors(cors -> cors.configurationSource(configurationSource()))
+                                // Kích hoạt CORS, tự lấy CorsConfigurationSource bean
+                                .csrf(AbstractHttpConfigurer::disable)
+                                // Phân quyền
+                                .authorizeHttpRequests(request -> request
+                                                .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                                                .requestMatchers(SWAGGER_WHITELIST).permitAll()                                                .requestMatchers(HttpMethod.POST, PUBLIC_ENDPOINTS).permitAll()
+                                                .requestMatchers(HttpMethod.GET, PUBLIC_GET_ENDPOINTS).permitAll()
+                                                .anyRequest().authenticated());
+                // 2. Cấu hình resource server để giải mã JWT
+                httpSecurity.oauth2ResourceServer(oauth2 -> oauth2
+                                .jwt(jwtConfigurer -> jwtConfigurer.decoder(jwtDecoder())
+                                                .jwtAuthenticationConverter(jwtAuthenticationConverter()))
+                                .authenticationEntryPoint(new JwtAuthenticationEntryPoint()));
+                return httpSecurity.build();
+        }
 
-    @Bean
-    JwtAuthenticationConverter jwtAuthenticationConverter() {
-        JwtGrantedAuthoritiesConverter jwtGrantedAuthoritiesConverter = new JwtGrantedAuthoritiesConverter();
-        jwtGrantedAuthoritiesConverter.setAuthorityPrefix("ROLE_");
+        @Bean
+        JwtAuthenticationConverter jwtAuthenticationConverter() {
+                JwtGrantedAuthoritiesConverter jwtGrantedAuthoritiesConverter = new JwtGrantedAuthoritiesConverter();
+                jwtGrantedAuthoritiesConverter.setAuthorityPrefix("ROLE_");
 
-        jwtGrantedAuthoritiesConverter.setAuthoritiesClaimName("scope");
-        JwtAuthenticationConverter jwtAuthenticationConverter = new JwtAuthenticationConverter();
-        jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(jwtGrantedAuthoritiesConverter);
+                jwtGrantedAuthoritiesConverter.setAuthoritiesClaimName("scope");
+                JwtAuthenticationConverter jwtAuthenticationConverter = new JwtAuthenticationConverter();
+                jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(jwtGrantedAuthoritiesConverter);
 
-        return jwtAuthenticationConverter;
-    }
+                return jwtAuthenticationConverter;
+        }
 
+        @Bean
+        public JwtDecoder jwtDecoder() {
+                SecretKeySpec secretKeySpec = new SecretKeySpec(signKey.getBytes(), "HS512");
+                return NimbusJwtDecoder.withSecretKey(secretKeySpec)
+                                .macAlgorithm(MacAlgorithm.HS512)
+                                .build();
+        }
 
-    @Bean
-    public JwtDecoder jwtDecoder() {
-        SecretKeySpec secretKeySpec = new SecretKeySpec(signKey.getBytes(), "HS512");
-        return NimbusJwtDecoder.withSecretKey(secretKeySpec)
-                .macAlgorithm(MacAlgorithm.HS512)
-                .build();
-    }
+        @Bean
+        public PasswordEncoder passwordEncoder() {
+                return new BCryptPasswordEncoder(10);
+        }
 
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder(10);
-    }
+        // Cấu hình CORS
+        CorsConfigurationSource configurationSource() {
+                CorsConfiguration corsConfiguration = new CorsConfiguration();
 
+                corsConfiguration.setAllowedOrigins(List.of("http://localhost:5173"));
+                corsConfiguration
+                                .setAllowedMethods(List.of("GET", "PUT", "POST", "PATCH", "DELETE", "OPTIONS", "HEAD"));
+                corsConfiguration.setAllowedHeaders(List.of("Authorization", "Content-Type", "X-Requested-With"));
+                corsConfiguration.setExposedHeaders(List.of("Authorization"));
+                // QUAN TRỌNG: Cho phép Frontend đọc được Header Authorization (chứa JWT)
+                corsConfiguration.setAllowCredentials(true); // Phải là false khi dùng "*"
+                corsConfiguration.setMaxAge(3600L);
 
-    // Cấu hình CORS
-    CorsConfigurationSource configurationSource() {
-        CorsConfiguration corsConfiguration = new CorsConfiguration();
-
-        corsConfiguration.setAllowedOrigins(List.of("http://localhost:5173"));
-        corsConfiguration.setAllowedMethods(List.of("GET", "PUT", "POST", "PATCH", "DELETE", "OPTIONS", "HEAD"));
-        corsConfiguration.setAllowedHeaders(List.of("Authorization", "Content-Type", "X-Requested-With"));
-        corsConfiguration.setExposedHeaders(List.of("Authorization"));
-        //QUAN TRỌNG: Cho phép Frontend đọc được Header Authorization (chứa JWT)
-        corsConfiguration.setAllowCredentials(true); // Phải là false khi dùng "*"
-        corsConfiguration.setMaxAge(3600L);
-
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", corsConfiguration);
-        return source;
-    }
-
+                UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+                source.registerCorsConfiguration("/**", corsConfiguration);
+                return source;
+        }
 
 }

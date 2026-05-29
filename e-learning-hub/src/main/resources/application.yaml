@@ -7,6 +7,13 @@ server:
       charset: UTF-8
       force: true
 
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+    version: openapi_3_0
+  swagger-ui:
+    disable-swagger-default-url: true
+    
 spring:
   security:
     oauth2:
