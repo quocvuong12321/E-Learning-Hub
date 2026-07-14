@@ -60,7 +60,7 @@ oauth2:
     authorization-url: https://accounts.google.com/o/oauth2/v2/auth
     token-url: https://www.googleapis.com/oauth2/v4/token
     user-info-url: https://www.googleapis.com/oauth2/v1/userinfo
-    redirect-uri: ${OAUTH2_REDIRECT_URI:http://localhost:8081/elearning-hub/auth/oauth2/callback} # ✅ URL frontend redirect
+    redirect-uri: ${OAUTH2_REDIRECT_URI}
 
 jwt:
   signerKey: ${JWT_SECRET:2e2223fa49b87178e75ad9300192eeb241a1fd2a35c4c95c1d2a7a6fefd72d86}
@@ -69,5 +69,13 @@ file:
 logging:
   level:
     org.springframework.security: DEBUG
+payos:
+  checksum-key: ${PAYOS_CHECKSUM_KEY}
+  api-key: ${PAYOS_API_KEY}
+  client-id: ${PAYOS_CLIENT_ID}
+  cancel-url: ${PAYOS_CANCEL_URI}
+  return-url: ${PAYOS_RETURN_URI}
+  log-level: NONE
+
 
 

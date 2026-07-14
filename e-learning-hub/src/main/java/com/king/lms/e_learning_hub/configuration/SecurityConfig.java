@@ -1,5 +1,6 @@
 package com.king.lms.e_learning_hub.configuration;
 
+import java.util.Collection;
 import java.util.List;
 
 import javax.crypto.spec.SecretKeySpec;
@@ -7,16 +8,19 @@ import javax.crypto.spec.SecretKeySpec;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.convert.converter.Converter;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.jose.jws.MacAlgorithm;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
-import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
@@ -37,7 +41,8 @@ public class SecurityConfig {
                         // "/auth/callback/**", // OAuth2 callback
                         "/auth/oauth2/**", // ✅ OAuth2 endpoints
                         // "/auth/google/callback", // ✅ Google callback
-        };
+                        "/payments/callback/payos"
+        };              
 
         private static final String[] PUBLIC_GET_ENDPOINTS = {
                         "/post/**",
@@ -67,7 +72,8 @@ public class SecurityConfig {
                                 // Phân quyền
                                 .authorizeHttpRequests(request -> request
                                                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                                                .requestMatchers(SWAGGER_WHITELIST).permitAll()                                                .requestMatchers(HttpMethod.POST, PUBLIC_ENDPOINTS).permitAll()
+                                                .requestMatchers(SWAGGER_WHITELIST).permitAll()
+                                                .requestMatchers(HttpMethod.POST, PUBLIC_ENDPOINTS).permitAll()
                                                 .requestMatchers(HttpMethod.GET, PUBLIC_GET_ENDPOINTS).permitAll()
                                                 .anyRequest().authenticated());
                 // 2. Cấu hình resource server để giải mã JWT
@@ -79,15 +85,30 @@ public class SecurityConfig {
         }
 
         @Bean
-        JwtAuthenticationConverter jwtAuthenticationConverter() {
+        public Converter<Jwt, AbstractAuthenticationToken> jwtAuthenticationConverter() {
                 JwtGrantedAuthoritiesConverter jwtGrantedAuthoritiesConverter = new JwtGrantedAuthoritiesConverter();
                 jwtGrantedAuthoritiesConverter.setAuthorityPrefix("ROLE_");
-
                 jwtGrantedAuthoritiesConverter.setAuthoritiesClaimName("scope");
-                JwtAuthenticationConverter jwtAuthenticationConverter = new JwtAuthenticationConverter();
-                jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(jwtGrantedAuthoritiesConverter);
 
-                return jwtAuthenticationConverter;
+                // SỬA LỖI 1: Sử dụng Lambda/Interface Converter thay vì override class final
+                return jwt -> {
+                        // 1. Trích xuất danh sách quyền (Roles) bằng converter mặc định
+                        Collection<GrantedAuthority> authorities = jwtGrantedAuthoritiesConverter.convert(jwt);
+
+                        // 2. SỬA LỖI 2: Lấy claim "userId" một cách an toàn
+                        Long userId = null;
+                        if (jwt.hasClaim("userId")) {
+                                Object userIdClaim = jwt.getClaim("userId");
+                                if (userIdClaim instanceof Number) {
+                                        userId = ((Number) userIdClaim).longValue();
+                                } else if (userIdClaim instanceof String) {
+                                        userId = Long.parseLong((String) userIdClaim);
+                                }
+                        }
+
+                        // 3. Trả về đối tượng Token Custom chứa ID của chúng ta
+                        return new CustomJwtAuthenticationToken(jwt, authorities, userId);
+                };
         }
 
         @Bean
