@@ -14,8 +14,8 @@ public enum ErrorCode {
     USERNAME_NOT_BLANK(1003, "Username cannot be blank", HttpStatus.BAD_REQUEST),
     PASSWORD_INVALID(1004, "Password must contain uppercase, lowercase, numbers, and special characters", HttpStatus.BAD_REQUEST),
     PASSWORD_LENGTH(1005, "Password must be at least 8 characters long", HttpStatus.BAD_REQUEST),
+    INVALID_REQUEST(1006,"Invalid request",HttpStatus.BAD_REQUEST),
     UNCATEGORIZED_VALIDATION(1999, "Uncategorized validation error", HttpStatus.BAD_REQUEST),
-
     // 2xxx: Auth (Authentication and Authorization Errors)
     UNAUTHENTICATED(2001, "User is not authenticated. Please log in.", HttpStatus.UNAUTHORIZED),
     EXPIRED_TOKEN(2002, "Token has expired", HttpStatus.UNAUTHORIZED),
@@ -32,14 +32,23 @@ public enum ErrorCode {
     QUIZ_NOT_EXIST(3008,"Quiz does not exist",HttpStatus.NOT_FOUND),
     QUESTION_NOT_EXIST(3009,"Question does not exist",HttpStatus.NOT_FOUND),
     ANSWER_NOT_EXIST(3010,"Answer does not exist", HttpStatus.NOT_FOUND),
-
+    ORDER_NOT_EXIST(3011,"Order does not exist",HttpStatus.NOT_FOUND),
+    USER_COURSE_NOT_EXIST(3012,"User Course does not exist",HttpStatus.NOT_FOUND),
+    USER_COURSE_ALREADY_COMPLETED(3013,"User Course completed",HttpStatus.NOT_ACCEPTABLE),
+    QUIZ_RESULT_NOT_EXIST(3014,"Quiz result does not exist",HttpStatus.NOT_FOUND),
+    USER_PROGRESS_NOT_EXIST(3015,"User Progress does not exist",HttpStatus.NOT_FOUND),
+    PAYMENT_NOT_EXIST(3016,"Payment does nost exist",HttpStatus.NOT_FOUND),
+    PAYMENT_GATEWAY_ERROR(3017,"An Payment gateway error occured",HttpStatus.INTERNAL_SERVER_ERROR),
+    ORDER_COMPLETED(3018,"You have already purchased this course",HttpStatus.BAD_REQUEST),
+    TRANSACTION_ALREADY_EXISTS(3019, "Order already has an active transaction.",HttpStatus.BAD_REQUEST),
     // 4xxx: Database Constraints (Persistence Errors)
     USERNAME_EXISTED(4001, "Username already exists", HttpStatus.CONFLICT),
     EMAIL_EXISTED(4002, "Email already exists", HttpStatus.CONFLICT),
     SLUG_EXISTED(4003, "Slug already exists, please choose another one", HttpStatus.CONFLICT), // Bổ sung cho SEO Slug logic
-
+    USER_ALREADY_ENROLLED_COURSE(4004,"User already erolled course",HttpStatus.CONFLICT),
+    USER_PROGRESS_ALREADY_EXIST(4005,"User already erolled user progress",HttpStatus.CONFLICT),
     // 9xxx: System (Global Errors)
-    UNCATEGORIZED_EXCEPTION(9999, "An unexpected system error occurred", HttpStatus.INTERNAL_SERVER_ERROR),
+    UNCATEGORIZED_EXCEPTION(9999, "An unexpected system error occurred", HttpStatus.INTERNAL_SERVER_ERROR)
     ;
 
     private int code;

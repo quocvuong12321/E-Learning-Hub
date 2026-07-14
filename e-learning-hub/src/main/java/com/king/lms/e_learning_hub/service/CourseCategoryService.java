@@ -13,8 +13,6 @@ import org.springframework.stereotype.Service;
 import com.king.lms.e_learning_hub.dto.Response.PageResponse;
 import com.king.lms.e_learning_hub.dto.category.CategoryRequest;
 import com.king.lms.e_learning_hub.dto.category.CategoryResponse;
-import com.king.lms.e_learning_hub.entity.Category;
-import com.king.lms.e_learning_hub.entity.Course;
 import com.king.lms.e_learning_hub.entity.CoursesCategory;
 import com.king.lms.e_learning_hub.exception.AppException;
 import com.king.lms.e_learning_hub.exception.ErrorCode;

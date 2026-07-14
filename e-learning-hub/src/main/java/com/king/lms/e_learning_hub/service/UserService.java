@@ -1,11 +1,14 @@
 package com.king.lms.e_learning_hub.service;
 
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,15 +19,11 @@ import com.king.lms.e_learning_hub.exception.AppException;
 import com.king.lms.e_learning_hub.exception.ErrorCode;
 import com.king.lms.e_learning_hub.mapper.UserMapper;
 import com.king.lms.e_learning_hub.repository.UserRepository;
-import com.king.lms.e_learning_hub.util.FileUploadUtils;
-import lombok.extern.slf4j.Slf4j;
+
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;
-
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.stream.Collectors;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
 @AllArgsConstructor
@@ -34,8 +33,7 @@ public class UserService {
 
    UserRepository userRepository;
     UserMapper userMapper;
-    PasswordEncoder passwordEncoder;
-    FileUploadUtils fileUploadUtils;
+
 
     /**
      * Tìm kiếm và lọc user theo nhiều tiêu chí

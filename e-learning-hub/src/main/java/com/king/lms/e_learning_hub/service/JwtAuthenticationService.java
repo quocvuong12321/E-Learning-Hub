@@ -6,7 +6,6 @@ import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.UUID;
 
-import com.king.lms.e_learning_hub.dto.oauth2.GoogleOAuthConfigResponse;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -15,8 +14,8 @@ import com.king.lms.e_learning_hub.dto.authenticate.AccessTokenResponse;
 import com.king.lms.e_learning_hub.dto.authenticate.AuthenticateRequest;
 import com.king.lms.e_learning_hub.dto.authenticate.AuthenticateResponse;
 import com.king.lms.e_learning_hub.dto.authenticate.RefreshTokenRequest;
+import com.king.lms.e_learning_hub.dto.oauth2.GoogleOAuthConfigResponse;
 import com.king.lms.e_learning_hub.dto.oauth2.OAuthLoginRequest;
-import com.king.lms.e_learning_hub.dto.oauth2.OAuthLoginResponse;
 import com.king.lms.e_learning_hub.dto.user.UserRequest;
 import com.king.lms.e_learning_hub.dto.user.UserResponse;
 import com.king.lms.e_learning_hub.entity.Role;
